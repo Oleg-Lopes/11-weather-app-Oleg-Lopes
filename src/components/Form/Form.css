@@ -1,0 +1,42 @@
+.App-weather {
+    padding: 10px 10px 0 10px;
+    border: 3px double #000;
+}
+
+.App-weather > div {
+    display: flex;
+    justify-content: space-between;
+    height: 10vh;
+}
+.App-weather div .weather-desc:first-letter {
+    text-transform: capitalize;
+}
+
+#weather-icon {
+    position: relative;
+    width: 100px;
+}
+#weather-icon img {
+    position: absolute;
+    top: -35px;
+    width: 100px;
+    height: 100px;
+}
+
+.App-forecast {
+    margin-top: 20px;
+    overflow-x: hidden;
+    height: 59vh;
+}
+#button-getWeather {
+    padding: 0 5px;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+#button-toF {
+    width: 180px;
+    height: 30px;
+    padding: 0;
+    line-height: normal;
+}

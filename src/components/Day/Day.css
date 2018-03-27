@@ -1,0 +1,13 @@
+.weather-icon i {
+    font-size: 3.25em;
+}
+h4 span {
+    text-transform: capitalize;
+}
+.row {
+    padding: 10px 15px !important;
+}
+
+.row:nth-child(odd) {
+    background: #ededed;
+}
