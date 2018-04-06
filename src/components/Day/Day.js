@@ -29,7 +29,7 @@ class Day extends Component {
                                 />
                                 <br />
                                 <span>
-                                    {this.props.isF == true ? (
+                                    {this.props.isF === true ? (
                                         <span>
                                             {Math.round(
                                                 (this.props.interval.main.temp *

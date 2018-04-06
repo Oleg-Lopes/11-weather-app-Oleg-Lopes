@@ -70,10 +70,7 @@ class Form extends Component {
         }
     }
 
-    getWeather(e) {
-        e.preventDefault();
-        // const cityname = e.nativeEvent.target.elements[0].value;
-
+    getWeather() {
         fetch(
             `https://api.openweathermap.org/data/2.5/weather?lat=${
                 this.state.lat
@@ -146,6 +143,80 @@ class Form extends Component {
             });
     }
 
+    getWeatherCity() {
+        if (document.getElementById("city").value == "") {
+            alert("Enter a city name first >_>");
+        } else {
+            fetch(
+                `https://api.openweathermap.org/data/2.5/weather?q=${
+                    document.getElementById("city").value
+                }&APPID=c2646c24f283ab337cddd011d7d75219&units=metric`
+            )
+                .then(this.handleErrors)
+                .then(res => res.json())
+                .then(res => {
+                    let dtSunrise = new Date(res.sys.sunrise * 1000);
+                    let sunrise =
+                        ("0" + dtSunrise.getHours()).substr(-2) +
+                        ":" +
+                        ("0" + dtSunrise.getMinutes()).substr(-2) +
+                        ":" +
+                        ("0" + dtSunrise.getSeconds()).substr(-2);
+                    let dtSunset = new Date(res.sys.sunset * 1000);
+                    let sunset =
+                        ("0" + dtSunset.getHours()).substr(-2) +
+                        ":" +
+                        ("0" + dtSunset.getMinutes()).substr(-2) +
+                        ":" +
+                        ("0" + dtSunset.getSeconds()).substr(-2);
+                    this.setState(
+                        {
+                            weather: {
+                                icon: res.weather[0].icon,
+                                desc: res.weather[0].description,
+                                windspeed: Math.round(res.wind.speed * 10) / 10,
+                                humidity: res.main.humidity,
+                                sunrise: sunrise,
+                                sunset: sunset,
+                                tempC: Math.round(res.main.temp * 10) / 10,
+                                tempF:
+                                    Math.round(
+                                        (res.main.temp * 9 / 5 + 32) * 10
+                                    ) / 10
+                            }
+                        },
+                        function() {
+                            console.log("Your current state: ", this.state);
+                        }
+                    );
+                })
+                .catch(function(error) {
+                    alert("Could not find your city");
+                });
+
+            fetch(
+                `https://api.openweathermap.org/data/2.5/forecast/?q=${
+                    document.getElementById("city").value
+                }&APPID=c2646c24f283ab337cddd011d7d75219&units=metric`
+            )
+                .then(this.handleErrors)
+                .then(res => res.json())
+                .then(res => {
+                    this.setState(
+                        {
+                            forecast: res.list
+                        },
+                        function() {
+                            // forecast is now here
+                        }
+                    );
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }
+    }
+
     render() {
         return (
             <div>
@@ -155,11 +226,24 @@ class Form extends Component {
                         className="button button-primary"
                         onClick={this.getWeather.bind(this)}
                     >
-                        Get Weather
+                        Get Weather (your location)
                     </button>
                 ) : (
-                    <p>Just a sec...</p>
+                    <p>Getting yout location, just a sec...</p>
                 )}
+                <p>Wait for your location or just look for any city below.</p>
+                <input
+                    type="text"
+                    id="city"
+                    placeholder="Enter city name here..."
+                />
+                <button
+                    id="button-getWeather"
+                    className="button button-primary"
+                    onClick={this.getWeatherCity.bind(this)}
+                >
+                    Get Weather (any city)
+                </button>
                 {this.state.weather && this.state.weather.icon != null ? (
                     <div className="App-weather">
                         <div id="weather-top">
@@ -173,7 +257,7 @@ class Form extends Component {
                             </button>
                             <p>
                                 Temperature:{" "}
-                                {this.state.isF == true ? (
+                                {this.state.isF === true ? (
                                     <span>
                                         {this.state.weather.tempF}&deg; F
                                     </span>
@@ -183,7 +267,7 @@ class Form extends Component {
                                     </span>
                                 )}
                             </p>
-                            <p class="weather-desc">
+                            <p className="weather-desc">
                                 {this.state.weather.desc}
                             </p>
                             <div id="weather-icon">
@@ -204,10 +288,7 @@ class Form extends Component {
                         </div>
                     </div>
                 ) : (
-                    <p>
-                        Wait for response or use Microsoft Edge (since
-                        geolocation is blocked for http)
-                    </p>
+                    <p />
                 )}
                 {this.state.forecast && this.state.forecast.length > 0 ? (
                     <div className="App-forecast">
